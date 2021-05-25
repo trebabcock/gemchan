@@ -124,7 +124,6 @@ func (a *App) post(c gig.Context) error {
 	buffer.AddBlankLine()
 	comments := handler.GetComments(a.DB, post.ID)
 	for _, c := range comments {
-		log.Println(c)
 		buffer.AddUnformatted(fmt.Sprintf("%s UTC", c.Time))
 		buffer.AddUnformatted(c.ID)
 		buffer.AddQuote(c.Content)
@@ -143,6 +142,6 @@ func (a *App) notFound(c gig.Context) error {
 }
 
 func (a *App) Run(crt, key string) {
-	log.Println("Server running at gemini://192.168.40.13:1965")
+	log.Println("Server running at gemini://gemchan.space")
 	a.Router.Run(crt, key)
 }
