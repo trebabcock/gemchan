@@ -114,7 +114,7 @@ func (a *App) post(c gig.Context) error {
 	buffer := gem.Gemtext{}
 	buffer.AddHeading("Post")
 	buffer.AddLink(baseURL("/"), "Home")
-	buffer.AddLink(baseURL(fmt.Sprintf("/board/%s", post.Board)), fmt.Sprintf("/%s", post.Board))
+	buffer.AddLink(baseURL(fmt.Sprintf("/board/%s", post.Board)), fmt.Sprintf("/%s/", post.Board))
 	buffer.AddBlankLine()
 	buffer.AddLink(baseURL("/post/"+post.ID), post.ID)
 	buffer.AddUnformatted(fmt.Sprintf("%s UTC", post.Time))
