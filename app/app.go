@@ -13,7 +13,7 @@ import (
 )
 
 func baseURL(path string) string {
-	return fmt.Sprintf("gemini://192.168.40.13:1965%s", path)
+	return fmt.Sprintf("gemini://gemchan.space%s", path)
 }
 
 type App struct {
@@ -51,7 +51,7 @@ func (a *App) handle(path string, f func(c gig.Context) error) {
 func (a *App) index(c gig.Context) error {
 	buffer := gem.Gemtext{}
 	buffer.AddHeading("Gemchan")
-	buffer.AddContent("Welcome to Gemchan, a textboard for Gemini!")
+	buffer.AddUnformatted("Welcome to Gemchan, a textboard for Gemini!")
 	buffer.AddSubHeading("Boards")
 	boards := handler.GetBoards()
 	for _, b := range boards {
@@ -60,7 +60,7 @@ func (a *App) index(c gig.Context) error {
 	buffer.AddBlankLine()
 	buffer.AddBlankLine()
 	buffer.AddLink("https://ko-fi.com/gemchan", "(HTTPS) If you enjoy Gemchan, consider a small donation to help keep the capsule running. It is paid for entirely out of my pocket, so anything helps.")
-	return c.Gemini(buffer.Content)
+	return c.Gemini(buffer.Buffer)
 }
 
 func (a *App) board(c gig.Context) error {
@@ -68,18 +68,18 @@ func (a *App) board(c gig.Context) error {
 	b := handler.GetBoard(r)
 	buffer := gem.Gemtext{}
 	buffer.AddHeading(fmt.Sprintf("Welcome to /%s/", b.Route))
-	buffer.AddContent(b.Description)
+	buffer.AddUnformatted(b.Description)
 	buffer.AddLink(baseURL("/"), "Home")
 	buffer.AddBlankLine()
 	buffer.AddLink(baseURL(fmt.Sprintf("/newpost/%s", b.Route)), "Create Post")
 	buffer.AddSubHeading("Posts")
 	for _, p := range handler.GetPostsFromBoard(a.DB, b.Route) {
 		buffer.AddLink(baseURL("/post/"+p.ID), p.ID)
-		buffer.AddContent(p.Time)
+		buffer.AddUnformatted(p.Time)
 		buffer.AddQuote(p.Content)
 		buffer.AddBlankLine()
 	}
-	return c.Gemini(buffer.Content)
+	return c.Gemini(buffer.Buffer)
 }
 
 func (a *App) newPost(c gig.Context) error {
@@ -117,7 +117,7 @@ func (a *App) post(c gig.Context) error {
 	buffer.AddLink(baseURL("/b/"), "/b/")
 	buffer.AddBlankLine()
 	buffer.AddLink(baseURL("/post/"+post.ID), post.ID)
-	buffer.AddContent(fmt.Sprintf("%s UTC", post.Time))
+	buffer.AddUnformatted(fmt.Sprintf("%s UTC", post.Time))
 	buffer.AddBlankLine()
 	buffer.AddQuote(post.Content)
 	buffer.AddLink(baseURL("/addComment/"+post.ID), "Add Comment")
@@ -125,21 +125,21 @@ func (a *App) post(c gig.Context) error {
 	comments := handler.GetComments(a.DB, post.ID)
 	for _, c := range comments {
 		log.Println(c)
-		buffer.AddContent(fmt.Sprintf("%s UTC", c.Time))
-		buffer.AddContent(c.ID)
+		buffer.AddUnformatted(fmt.Sprintf("%s UTC", c.Time))
+		buffer.AddUnformatted(c.ID)
 		buffer.AddQuote(c.Content)
 		buffer.AddBlankLine()
 	}
-	return c.Gemini(buffer.Content)
+	return c.Gemini(buffer.Buffer)
 }
 
 func (a *App) notFound(c gig.Context) error {
 	buffer := gem.Gemtext{}
 	buffer.AddHeading("Not Found")
-	buffer.AddContent("Damn, you broke it.")
+	buffer.AddUnformatted("Damn, you broke it.")
 	buffer.AddBlankLine()
 	buffer.AddLink(baseURL("/"), "Return Home")
-	return c.Gemini(buffer.Content)
+	return c.Gemini(buffer.Buffer)
 }
 
 func (a *App) Run(crt, key string) {
