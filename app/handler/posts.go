@@ -42,9 +42,10 @@ func GetPost(db *gorm.DB, id string) *model.Post {
 
 func AddComment(db *gorm.DB, content, postID string) {
 	p := GetPost(db, postID)
+	id := uuid.NewString()
 	c := model.Comment{
 		Content: content,
-		ID:      uuid.NewString(),
+		ID:      id,
 		Time:    time.Now().UTC().Format(time.Stamp),
 		PostID:  postID,
 	}
