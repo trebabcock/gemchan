@@ -59,9 +59,6 @@ func AddComment(db *gorm.DB, content, postID string) {
 
 func GetComments(db *gorm.DB, postID string) []model.Comment {
 	c := []model.Comment{}
-	if err := db.Where(model.Comment{PostID: postID}).Find(&c).Error; err != nil {
-		log.Println("Couldn't find commends:", err)
-		return nil
-	}
+	db.Find(&c, db.Where(model.Comment{PostID: postID}))
 	return c
 }

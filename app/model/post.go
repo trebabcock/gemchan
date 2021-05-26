@@ -8,7 +8,7 @@ type Post struct {
 	ID         string
 	Time       string
 	LastUpdate time.Time
-	Comments   []Comment `gorm:"foreignKey:ID;references:ID"`
+	Comments   []Comment
 }
 
 type Comment struct {
