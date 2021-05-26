@@ -18,7 +18,7 @@ func CreatePost(db *gorm.DB, content, board string) string {
 		Time:       time.Now().UTC().Format(time.Stamp),
 		LastUpdate: time.Now().UTC(),
 	}
-	if err := db.Save(&post).Error; err != nil {
+	if err := db.Create(&post).Error; err != nil {
 		log.Println("Couldn't save post:", err)
 		return "Unable to save post"
 	}
