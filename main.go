@@ -7,5 +7,5 @@ import (
 func main() {
 	app := &app.App{}
 	app.Init()
-	app.Run("cert.pem", "privkey.pem")
+	app.Run("gemchan.space.crt", "gemchan.space.key")
 }
