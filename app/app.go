@@ -120,12 +120,17 @@ func (a *App) post(c gig.Context) error {
 	buffer.AddUnformatted(fmt.Sprintf("%s UTC", post.Time))
 	buffer.AddBlankLine()
 	buffer.AddQuote(post.Content)
+	buffer.AddBlankLine()
 	buffer.AddLink(baseURL("/addComment/"+post.ID), "Add Comment")
+	buffer.AddBlankLine()
+	buffer.AddSubHeading("Comments")
 	buffer.AddBlankLine()
 	for _, c := range handler.GetComments(a.DB, post.ID) {
 		buffer.AddUnformatted(c.ID)
 		buffer.AddUnformatted(fmt.Sprintf("%s UTC", c.Time))
+		buffer.AddBlankLine()
 		buffer.AddQuote(c.Content)
+		buffer.AddBlankLine()
 		buffer.AddBlankLine()
 	}
 	return c.Gemini(buffer.Buffer)
