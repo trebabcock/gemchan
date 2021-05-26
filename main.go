@@ -7,5 +7,5 @@ import (
 func main() {
 	app := &app.App{}
 	app.Init()
-	app.Run("server.crt", "server.key")
+	app.Run("cert.pem", "privkey.pem")
 }
