@@ -59,7 +59,7 @@ func (a *App) index(c gig.Context) error {
 	}
 	buffer.AddBlankLine()
 	buffer.AddBlankLine()
-	buffer.AddLink("https://ko-fi.com/gemchan", "(HTTPS) If you enjoy Gemchan, consider a small donation to help keep the capsule running. It is paid for entirely out of my pocket, so anything helps.")
+	buffer.AddLink("https://ko-fi.com/gemchan", "If you enjoy Gemchan, consider a small donation to help keep the capsule running. It is paid for entirely out of my pocket, so anything helps.")
 	return c.Gemini(buffer.Buffer)
 }
 
@@ -122,10 +122,9 @@ func (a *App) post(c gig.Context) error {
 	buffer.AddQuote(post.Content)
 	buffer.AddLink(baseURL("/addComment/"+post.ID), "Add Comment")
 	buffer.AddBlankLine()
-	comments := handler.GetComments(a.DB, post.ID)
-	for _, c := range comments {
-		buffer.AddUnformatted(fmt.Sprintf("%s UTC", c.Time))
+	for _, c := range handler.GetComments(a.DB, post.ID) {
 		buffer.AddUnformatted(c.ID)
+		buffer.AddUnformatted(fmt.Sprintf("%s UTC", c.Time))
 		buffer.AddQuote(c.Content)
 		buffer.AddBlankLine()
 	}
