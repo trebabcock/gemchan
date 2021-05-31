@@ -13,6 +13,7 @@ type Post struct {
 
 type Comment struct {
 	Content string
+	ReplyTo string
 	ID      string
 	Time    string
 	PostID  string

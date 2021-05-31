@@ -6,6 +6,7 @@ import (
 	"gem/app/model"
 	gem "gem/gemgen"
 	"log"
+	"strings"
 
 	"github.com/pitr/gig"
 	"gorm.io/driver/sqlite"
@@ -50,6 +51,7 @@ func (a *App) setRoutes() {
 	a.handle("/newpost/:board", a.newPost)
 	a.handle("/post/:id", a.post)
 	a.handle("/addComment/:id", a.addComment)
+	a.handle("/replyComment/:id", a.replyComment)
 	a.handle("*", a.notFound)
 }
 
@@ -87,6 +89,7 @@ func (a *App) board(c gig.Context) error {
 	buffer.AddBlankLine()
 	buffer.AddLink(baseURL(fmt.Sprintf("/newpost/%s", b.Route)), "Create Post")
 	buffer.AddSubHeading("Posts")
+	buffer.AddBlankLine()
 	for _, p := range handler.GetPostsFromBoard(a.DB, b.Route) {
 		buffer.AddLink(baseURL("/post/"+p.ID), p.ID)
 		buffer.AddUnformatted(p.Time)
@@ -123,6 +126,21 @@ func (a *App) addComment(c gig.Context) error {
 	}
 }
 
+func (a *App) replyComment(c gig.Context) error {
+	q, err := c.QueryString()
+	if err != nil {
+		log.Fatal(err)
+	}
+	ids := strings.Split(c.Param("id"), "&")
+	if q == "" {
+		return c.NoContent(gig.StatusInput, "Add Comment")
+	} else {
+		post := handler.GetPost(a.DB, ids[0])
+		handler.AddCommentReply(a.DB, q, ids[0], post.ID)
+		return c.NoContent(gig.StatusRedirectTemporary, baseURL("/post/"+post.ID))
+	}
+}
+
 func (a *App) post(c gig.Context) error {
 	post := handler.GetPost(a.DB, c.Param("id"))
 	buffer := gem.Gemtext{}
@@ -142,7 +160,11 @@ func (a *App) post(c gig.Context) error {
 	for _, c := range handler.GetComments(a.DB, post.ID) {
 		buffer.AddUnformatted(c.ID)
 		buffer.AddUnformatted(fmt.Sprintf("%s UTC", c.Time))
+		if c.ReplyTo != "" {
+			buffer.AddUnformatted(fmt.Sprintf("Reply to %s", c.ReplyTo))
+		}
 		buffer.AddQuote(c.Content)
+		buffer.AddLink(baseURL(fmt.Sprintf("/replyComment/%s&%s", post.ID, c.ID)), "Reply")
 		buffer.AddBlankLine()
 	}
 	return c.Gemini(buffer.Buffer)

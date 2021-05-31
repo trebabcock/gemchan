@@ -45,6 +45,25 @@ func AddComment(db *gorm.DB, content, postID string) {
 	id := uuid.NewString()
 	c := model.Comment{
 		Content: content,
+		ReplyTo: "",
+		ID:      id,
+		Time:    time.Now().UTC().Format(time.Stamp),
+		PostID:  postID,
+	}
+	p.Comments = append(p.Comments, c)
+	p.LastUpdate = time.Now().UTC()
+	if err := db.Save(&p).Error; err != nil {
+		log.Println("Couldn't add comment:", err)
+		return
+	}
+}
+
+func AddCommentReply(db *gorm.DB, content, replyto, postID string) {
+	p := GetPost(db, postID)
+	id := uuid.NewString()
+	c := model.Comment{
+		Content: content,
+		ReplyTo: replyto,
 		ID:      id,
 		Time:    time.Now().UTC().Format(time.Stamp),
 		PostID:  postID,
