@@ -62,6 +62,7 @@ func (a *App) index(c gig.Context) error {
 	buffer.AddCodeBlock(banner)
 	buffer.AddHeading("Gemchan")
 	buffer.AddUnformatted("Welcome to Gemchan, a textboard for Gemini!")
+	buffer.AddBlankLine()
 	buffer.AddSubHeading("Boards")
 	boards := handler.GetBoards()
 	for _, b := range boards {
