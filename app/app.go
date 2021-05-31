@@ -12,6 +12,15 @@ import (
 	"gorm.io/gorm"
 )
 
+var banner = `
+  ____                     _                 
+ / ___| ___ _ __ ___   ___| |__   __ _ _ __  
+| |  _ / _ \ '_ ' _ \ / __| '_ \ / _' | '_ \ 
+| |_| |  __/ | | | | | (__| | | | (_| | | | |
+ \____|\___|_| |_| |_|\___|_| |_|\__,_|_| |_|
+
+`
+
 func baseURL(path string) string {
 	return fmt.Sprintf("gemini://gemchan.space%s", path)
 }
@@ -50,6 +59,7 @@ func (a *App) handle(path string, f func(c gig.Context) error) {
 
 func (a *App) index(c gig.Context) error {
 	buffer := gem.Gemtext{}
+	buffer.AddCodeBlock(banner)
 	buffer.AddHeading("Gemchan")
 	buffer.AddUnformatted("Welcome to Gemchan, a textboard for Gemini!")
 	buffer.AddSubHeading("Boards")
@@ -59,13 +69,16 @@ func (a *App) index(c gig.Context) error {
 	}
 	buffer.AddBlankLine()
 	buffer.AddBlankLine()
-	buffer.AddLink("https://ko-fi.com/gemchan", "If you enjoy Gemchan, consider a small donation to help keep the capsule running. It is paid for entirely out of my pocket, so anything helps.")
+	buffer.AddLink("https://ko-fi.com/gemchan", "Buy me a coffee! Or don't, that works too!")
 	return c.Gemini(buffer.Buffer)
 }
 
 func (a *App) board(c gig.Context) error {
 	r := c.Param("route")
-	b := handler.GetBoard(r)
+	b, err := handler.GetBoard(r)
+	if err != nil {
+		return c.NoContent(gig.StatusRedirectTemporary, baseURL("/"))
+	}
 	buffer := gem.Gemtext{}
 	buffer.AddHeading(fmt.Sprintf("Welcome to /%s/", b.Route))
 	buffer.AddUnformatted(b.Description)

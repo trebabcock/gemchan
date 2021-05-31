@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"gem/app/model"
 	"log"
 )
@@ -42,12 +43,12 @@ func GetBoards() []model.Board {
 	return boards
 }
 
-func GetBoard(route string) model.Board {
+func GetBoard(route string) (model.Board, error) {
 	for _, b := range boards {
 		if b.Route == route {
-			return b
+			return b, nil
 		}
 	}
 	log.Println("Couldn't find board")
-	return model.Board{}
+	return model.Board{}, errors.New("BOARD NOT FOUND")
 }
