@@ -136,7 +136,7 @@ func (a *App) replyComment(c gig.Context) error {
 		return c.NoContent(gig.StatusInput, "Add Comment")
 	} else {
 		post := handler.GetPost(a.DB, ids[0])
-		handler.AddCommentReply(a.DB, q, ids[0], post.ID)
+		handler.AddCommentReply(a.DB, q, ids[1], post.ID)
 		return c.NoContent(gig.StatusRedirectTemporary, baseURL("/post/"+post.ID))
 	}
 }
