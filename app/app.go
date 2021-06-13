@@ -93,10 +93,11 @@ func (a *App) board(c gig.Context) error {
 	for _, p := range handler.GetPostsFromBoard(a.DB, b.Route) {
 		buffer.AddLink(baseURL("/post/"+p.ID), p.ID)
 		buffer.AddUnformatted(p.Time)
+		c := handler.GetComments(a.DB, p.ID)
 		if len(p.Comments) == 1 {
-			buffer.AddUnformatted(fmt.Sprintf("%d comment", len(p.Comments)))
+			buffer.AddUnformatted(fmt.Sprintf("%d comment", len(c)))
 		} else {
-			buffer.AddUnformatted(fmt.Sprintf("%d comments", len(p.Comments)))
+			buffer.AddUnformatted(fmt.Sprintf("%d comments", len(c)))
 		}
 		buffer.AddQuote(p.Content)
 		buffer.AddBlankLine()
