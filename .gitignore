@@ -1,1 +1,9 @@
 gorm.db
+gem
+gemchan
+gemchan.space.crt
+gemchan.space.key
+localhost.crt
+localhost.key
+assets/gemchan.space.crt
+assets/gemchan.space.key

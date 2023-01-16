@@ -8,7 +8,6 @@ type Post struct {
 	ID         string
 	Time       string
 	LastUpdate time.Time
-	Comments   []Comment
 }
 
 type Comment struct {

@@ -1,11 +1,22 @@
 package main
 
 import (
-	app "gem/app"
+	"embed"
+	app "gemchan/app"
+	"gemchan/keys"
+)
+
+var (
+	//go:embed assets
+	fs embed.FS
 )
 
 func main() {
 	app := &app.App{}
 	app.Init()
-	app.Run("gemchan.space.crt", "gemchan.space.key")
+
+	crt, key := keys.GetKeys(&fs)
+
+	app.Run(crt, key)
+
 }
